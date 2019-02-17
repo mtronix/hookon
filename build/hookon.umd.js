@@ -1,8 +1,8 @@
 /**
   Package: hookon
   Hook your React app on our hooks
-  Version: 0.0.1-alpha.1
-  Build: Sun, 17 Feb 2019 13:58:40 GMT
+  Version: 0.0.1-alpha.2
+  Build: Sun, 17 Feb 2019 18:32:41 GMT
   @license: MIT
   @preserve
 */
