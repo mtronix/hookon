@@ -8,7 +8,7 @@
     "start": "NODE_ENV=development rollup -c -w",
     "prebuild": "shx rm -rf build",
     "build": "NODE_ENV=production rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Testing library\""
   },
   "repository": {
     "type": "git",
