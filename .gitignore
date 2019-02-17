@@ -1,0 +1,7 @@
+node_modules/
+.idea/
+.rpt2_cache/
+
+*.log
+.DS_Store
+Thumbs.db
