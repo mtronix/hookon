@@ -41,6 +41,9 @@ jobs:
           at: ~/repo
 
       - run:
+          command: pwd && ls -lah
+
+      - run:
           name: Testing
           command: npm test
 
