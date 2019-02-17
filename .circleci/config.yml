@@ -75,7 +75,7 @@ workflows:
             tags:
               only: /^v.*/
 
-      - deploy:
+      - release:
           requires:
             - build
             - test
