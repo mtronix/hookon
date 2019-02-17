@@ -1,6 +1,6 @@
 {
   "name": "hookon",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "Hook your React app on our hooks",
   "main": "lib/main.ts",
   "browser": "build/hookon.umd.min.js",
