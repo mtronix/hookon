@@ -4,7 +4,7 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:10.13.0-stretch
-  parallelism: 4
+#  parallelism: 4
 
 jobs:
   # Checkout code and install dependencies
