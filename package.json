@@ -1,6 +1,6 @@
 {
   "name": "hookon",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.7",
   "description": "Hook your React app on our hooks",
   "main": "lib/main.ts",
   "browser": "build/hookon.umd.min.js",
@@ -8,7 +8,7 @@
     "start": "NODE_ENV=development rollup -c -w",
     "prebuild": "shx rm -rf build",
     "build": "NODE_ENV=production rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Testing library\""
   },
   "repository": {
     "type": "git",

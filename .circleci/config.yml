@@ -1,0 +1,85 @@
+version: 2
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:10.13.0-stretch
+  parallelism: 1
+
+jobs:
+  # Checkout code and install dependencies
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore node_modules cache
+          keys:
+            - v1-dependencies-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - v1-dependencies-{{ arch }}-{{ .Branch }}-
+            - v1-dependencies-{{ arch }}-
+
+      - run:
+          name: Install packages from npm
+          command: npm ci
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+
+  # Run tests and sanity checks
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Testing
+          command: npm test
+
+  # Release to npm
+  release:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
+      - run:
+          name: Publish package to npm
+          command: npm publish
+
+workflows:
+  version: 2
+  release:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+
+      - test:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+
+      - release:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: /^master$/
