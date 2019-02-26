@@ -4,7 +4,7 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:10.13.0-stretch
-#  parallelism: 4
+  parallelism: 1
 
 jobs:
   # Checkout code and install dependencies
@@ -39,9 +39,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
-
-      - run:
-          command: pwd && ls -lah
 
       - run:
           name: Testing
@@ -80,10 +77,9 @@ workflows:
 
       - release:
           requires:
-            - build
             - test
           filters:
             tags:
               only: /^v.*/
             branches:
-              ignore: /.*/
+              only: /^master$/
