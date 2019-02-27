@@ -1,10 +1,12 @@
 version: 2
 
+# Default node.js image
 defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:10.13.0-stretch
 
+# Filter only tagged commit
 filter_version_tag: &filter_version_tag
   filters:
     tags:
