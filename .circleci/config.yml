@@ -1,15 +1,24 @@
 version: 2
 
+# Default node.js image
 defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:10.13.0-stretch
-  parallelism: 1
+
+# Filter only tagged commit
+filter_version_tag: &filter_version_tag
+  filters:
+    tags:
+      only: /v[0-9]+(\.[0-9]+)*/
+    branches:
+      ignore: /.*/
 
 jobs:
-  # Checkout code and install dependencies
-  build:
+  # Checkout code, install dependencies and save cache
+  checkout:
     <<: *defaults
+
     steps:
       - checkout
 
@@ -21,7 +30,7 @@ jobs:
             - v1-dependencies-{{ arch }}-
 
       - run:
-          name: Install packages from npm
+          name: Install dependencies
           command: npm ci
 
       - save_cache:
@@ -33,9 +42,26 @@ jobs:
           root: ~/repo
           paths: .
 
+  # Build
+  build:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Build
+          command: npm run build
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+
   # Run tests and sanity checks
   test:
     <<: *defaults
+
     steps:
       - attach_workspace:
           at: ~/repo
@@ -44,9 +70,10 @@ jobs:
           name: Testing
           command: npm test
 
-  # Release to npm
-  release:
+  # Deploy package to npm
+  deploy:
     <<: *defaults
+
     steps:
       - attach_workspace:
           at: ~/repo
@@ -61,25 +88,35 @@ jobs:
 
 workflows:
   version: 2
-  release:
+
+  build:
     jobs:
+      - checkout
+
       - build:
-          filters:
-            tags:
-              only: /^v.*/
+          requires:
+            - checkout
 
       - test:
           requires:
             - build
-          filters:
-            tags:
-              only: /^v.*/
+
+  release:
+    jobs:
+      - checkout:
+          <<: *filter_version_tag
+
+      - build:
+          <<: *filter_version_tag
+          requires:
+            - checkout
+
+      - test:
+          <<: *filter_version_tag
+          requires:
+            - build
 
       - release:
+          <<: *filter_version_tag
           requires:
             - test
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              only: /^master$/
