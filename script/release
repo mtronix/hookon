@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+const https = require('https');
+
+const GITHUB_API_URL = 'https://api.github.com';
+const GITHUB_TOKEN = '43c976900cfd247fff970374531833a66ea1911c';
+
+
+https.get(`${GITHUB_API_URL}/mtronix/hookon`, response => {
+  console.log(response.statusCode);
+});
+
+console.log('Hello bin script' + GITHUB_TOKEN);
